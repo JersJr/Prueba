@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control de Gastos - Javier & Toshio (Google Sheets)</title>
     <style>
-        /* ========== ESTILOS COMPLETOS (sin cambios) ========== */
+        /* ========== ESTILOS COMPLETOS ========== */
         * {
             margin: 0;
             padding: 0;
@@ -28,7 +28,6 @@
             font-size: 2.5em;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        /* Login */
         .login-container {
             background: white;
             border-radius: 15px;
@@ -68,7 +67,6 @@
             color: #dc3545;
             margin-top: 10px;
         }
-        /* Contenido principal */
         #mainContent {
             display: none;
         }
@@ -85,7 +83,6 @@
         .logout-btn:hover {
             transform: scale(1.05);
         }
-        /* Tarjetas de saldo */
         .saldos-principales {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -133,7 +130,6 @@
             font-weight: bold;
             color: #333;
         }
-        /* Monto inicial */
         .monto-inicial-card {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 15px;
@@ -171,15 +167,10 @@
         .monto-inicial-input button:hover {
             transform: scale(1.05);
         }
-        .monto-inicial-input button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
         .monto-fijo {
             font-size: 1.3em;
             font-weight: bold;
         }
-        /* Pagos Pendientes */
         .pagos-pendientes {
             background: #fff3cd;
             border: 2px solid #ffc107;
@@ -230,7 +221,6 @@
         .btn-pagar-pendiente:hover {
             transform: scale(1.05);
         }
-        /* Ahorros Individuales */
         .ahorros-individuales {
             background: white;
             border-radius: 15px;
@@ -282,7 +272,6 @@
         }
         .ahorro-control button.javier { background: #667eea; }
         .ahorro-control button.toshio { background: #f093fb; }
-        /* Préstamos */
         .prestamos-section {
             background: white;
             border-radius: 15px;
@@ -342,10 +331,6 @@
             cursor: pointer;
             margin-left: 5px;
         }
-        .btn-pagar-prestamo:hover {
-            transform: scale(1.02);
-        }
-        /* Formulario principal */
         .formulario-principal {
             background: white;
             border-radius: 15px;
@@ -421,7 +406,6 @@
         .btn-registrar:hover {
             transform: translateY(-2px);
         }
-        /* Gráfica */
         .grafica-section {
             background: white;
             border-radius: 15px;
@@ -450,7 +434,6 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 10px 10px 0 0;
             transition: height 0.3s;
-            position: relative;
         }
         .barra.depositos { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }
         .barra.gastos { background: linear-gradient(135deg, #dc3545 0%, #ff6b6b 100%); }
@@ -484,7 +467,6 @@
         .leyenda-color.depositos { background: #28a745; }
         .leyenda-color.gastos { background: #dc3545; }
         .leyenda-color.ahorros { background: #ffc107; }
-        /* Historial de cierres */
         .historial-section {
             background: white;
             border-radius: 15px;
@@ -512,7 +494,6 @@
             font-size: 0.9em;
             margin: 5px 0;
         }
-        /* Resumen mensual */
         .resumen-mensual {
             background: white;
             border-radius: 15px;
@@ -576,7 +557,6 @@
             font-size: 1.2em;
             border-top: 2px solid #333;
         }
-        /* Tabla de movimientos */
         .tabla-gastos {
             background: white;
             border-radius: 15px;
@@ -624,15 +604,15 @@
         <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
         <h1>💰 Control de Gastos - Javier & Toshio</h1>
 
-        <!-- Monto Inicial -->
+        <!-- Monto Inicial - AHORA EDITABLE -->
         <div class="monto-inicial-card">
             <div>
                 <h2>🏦 Saldo Conjunto Inicial</h2>
                 <p class="monto-fijo" id="montoFijoDisplay">$0.00</p>
             </div>
-            <div class="monto-inicial-input" id="montoInicialSection">
-                <input type="number" id="montoInicial" placeholder="Ingrese saldo inicial" step="0.01" min="0">
-                <button onclick="establecerMontoInicial()" id="btnEstablecerMonto">Establecer</button>
+            <div class="monto-inicial-input">
+                <input type="number" id="montoInicial" placeholder="Saldo inicial" step="0.01" min="0">
+                <button onclick="cambiarMontoInicial()">Cambiar saldo inicial</button>
             </div>
         </div>
 
@@ -648,84 +628,42 @@
                 <h3>Javier</h3>
                 <div class="monto" id="saldoJavier">$0.00</div>
                 <div class="detalles-saldos">
-                    <div class="detalle-item">
-                        <span class="label">Debe pagar/mes</span>
-                        <span>$374.88</span>
-                    </div>
-                    <div class="detalle-item">
-                        <span class="label">Depositado</span>
-                        <span id="depositadoJavier">$0.00</span>
-                    </div>
-                    <div class="detalle-item">
-                        <span class="label">Ahorro</span>
-                        <span id="ahorroJavierCard" class="text-primary">$0.00</span>
-                    </div>
-                    <div class="detalle-item">
-                        <span class="label">Préstamos</span>
-                        <span id="prestamosJavierCard" class="text-purple">$0.00</span>
-                    </div>
+                    <div class="detalle-item"><span class="label">Debe pagar/mes</span><span>$374.88</span></div>
+                    <div class="detalle-item"><span class="label">Depositado</span><span id="depositadoJavier">$0.00</span></div>
+                    <div class="detalle-item"><span class="label">Ahorro</span><span id="ahorroJavierCard">$0.00</span></div>
+                    <div class="detalle-item"><span class="label">Préstamos</span><span id="prestamosJavierCard">$0.00</span></div>
                 </div>
             </div>
-
             <div class="saldo-card toshio">
                 <h3>Toshio</h3>
                 <div class="monto" id="saldoToshio">$0.00</div>
                 <div class="detalles-saldos">
-                    <div class="detalle-item">
-                        <span class="label">Debe pagar/mes</span>
-                        <span>$491.06</span>
-                    </div>
-                    <div class="detalle-item">
-                        <span class="label">Depositado</span>
-                        <span id="depositadoToshio">$0.00</span>
-                    </div>
-                    <div class="detalle-item">
-                        <span class="label">Ahorro</span>
-                        <span id="ahorroToshioCard" class="text-info">$0.00</span>
-                    </div>
-                    <div class="detalle-item">
-                        <span class="label">Préstamos</span>
-                        <span id="prestamosToshioCard" class="text-purple">$0.00</span>
-                    </div>
+                    <div class="detalle-item"><span class="label">Debe pagar/mes</span><span>$491.06</span></div>
+                    <div class="detalle-item"><span class="label">Depositado</span><span id="depositadoToshio">$0.00</span></div>
+                    <div class="detalle-item"><span class="label">Ahorro</span><span id="ahorroToshioCard">$0.00</span></div>
+                    <div class="detalle-item"><span class="label">Préstamos</span><span id="prestamosToshioCard">$0.00</span></div>
                 </div>
             </div>
-
             <div class="saldo-card conjunto">
                 <h3>Conjunto</h3>
                 <div class="monto" id="saldoConjunto">$0.00</div>
                 <div class="detalles-saldos">
-                    <div class="detalle-item">
-                        <span class="label">Saldo Banco</span>
-                        <span id="saldoBanco">$0.00</span>
-                    </div>
-                    <div class="detalle-item">
-                        <span class="label">Disponible gastos</span>
-                        <span id="disponibleGastos">$0.00</span>
-                    </div>
-                    <div class="detalle-item">
-                        <span class="label">Total Gastos</span>
-                        <span id="totalGastos">$0.00</span>
-                    </div>
+                    <div class="detalle-item"><span class="label">Saldo Banco</span><span id="saldoBanco">$0.00</span></div>
+                    <div class="detalle-item"><span class="label">Disponible gastos</span><span id="disponibleGastos">$0.00</span></div>
+                    <div class="detalle-item"><span class="label">Total Gastos</span><span id="totalGastos">$0.00</span></div>
                 </div>
             </div>
-
             <div class="saldo-card ahorros">
                 <h3>Ahorros</h3>
                 <div class="monto" id="ahorroTotal">$0.00</div>
                 <div class="detalles-saldos">
-                    <div class="detalle-item">
-                        <span class="label">Javier</span>
-                        <span id="ahorroJavierTotal" class="text-primary">$0.00</span>
-                    </div>
-                    <div class="detalle-item">
-                        <span class="label">Toshio</span>
-                        <span id="ahorroToshioTotal" class="text-info">$0.00</span>
-                    </div>
+                    <div class="detalle-item"><span class="label">Javier</span><span id="ahorroJavierTotal">$0.00</span></div>
+                    <div class="detalle-item"><span class="label">Toshio</span><span id="ahorroToshioTotal">$0.00</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- Sección de Ahorros Individuales -->
+        <!-- Ahorros Individuales -->
         <div class="ahorros-individuales">
             <h2>💰 Ahorros Individuales</h2>
             <div class="ahorros-grid">
@@ -748,7 +686,7 @@
             </div>
         </div>
 
-        <!-- Sección de Préstamos -->
+        <!-- Préstamos -->
         <div class="prestamos-section">
             <h2>💰 Préstamos (Cuentas por Cobrar)</h2>
             <div class="prestamos-grid">
@@ -773,156 +711,60 @@
         <!-- Formulario Principal -->
         <div class="formulario-principal">
             <h2>📝 Registrar Movimiento</h2>
-            
             <div class="tipo-movimiento">
                 <button class="tipo-btn deposito activo" onclick="seleccionarTipo('deposito', this)">💰 Depósito</button>
                 <button class="tipo-btn pago" onclick="seleccionarTipo('pago', this)">💸 Pago</button>
                 <button class="tipo-btn banco" onclick="seleccionarTipo('banco', this)">🏦 Banco</button>
                 <button class="tipo-btn prestamo" onclick="seleccionarTipo('prestamo', this)">💰 Préstamo</button>
             </div>
-
-            <!-- Campos para Depósito -->
             <div id="camposDeposito">
                 <div class="campos-movimiento">
-                    <div class="campo-group">
-                        <label>📅 Fecha:</label>
-                        <input type="date" id="fechaDeposito">
-                    </div>
-                    <div class="campo-group">
-                        <label>👤 Persona:</label>
-                        <select id="personaDeposito">
-                            <option value="javier">Javier</option>
-                            <option value="toshio">Toshio</option>
-                        </select>
-                    </div>
-                    <div class="campo-group">
-                        <label>📆 Quincena:</label>
-                        <select id="quincenaDeposito">
-                            <option value="1">Primera Quincena</option>
-                            <option value="2">Segunda Quincena</option>
-                        </select>
-                    </div>
-                    <div class="campo-group">
-                        <label>💰 Monto:</label>
-                        <input type="number" id="montoDeposito" step="0.01" min="0" placeholder="0.00">
-                    </div>
+                    <div class="campo-group"><label>📅 Fecha:</label><input type="date" id="fechaDeposito"></div>
+                    <div class="campo-group"><label>👤 Persona:</label><select id="personaDeposito"><option value="javier">Javier</option><option value="toshio">Toshio</option></select></div>
+                    <div class="campo-group"><label>📆 Quincena:</label><select id="quincenaDeposito"><option value="1">Primera Quincena</option><option value="2">Segunda Quincena</option></select></div>
+                    <div class="campo-group"><label>💰 Monto:</label><input type="number" id="montoDeposito" step="0.01" min="0" placeholder="0.00"></div>
                 </div>
                 <button class="btn-registrar deposito" onclick="registrarDeposito()">Registrar Depósito</button>
             </div>
-
-            <!-- Campos para Pago -->
             <div id="camposPago" class="oculto">
                 <div class="campos-movimiento">
-                    <div class="campo-group">
-                        <label>📅 Fecha:</label>
-                        <input type="date" id="fechaPago">
-                    </div>
-                    <div class="campo-group">
-                        <label>📋 Concepto:</label>
-                        <select id="conceptoPago">
-                            <option value="casa">Casa</option>
-                            <option value="carro">Carro</option>
-                            <option value="prestamo">Préstamo</option>
-                            <option value="luz">Luz</option>
-                            <option value="agua">Agua</option>
-                            <option value="basura">Basura</option>
-                            <option value="telefono">Teléfono</option>
-                            <option value="seguro">Seguro</option>
-                            <option value="internet">Internet</option>
-                            <option value="perros">Perros</option>
-                        </select>
-                    </div>
-                    <div class="campo-group">
-                        <label>💰 Monto:</label>
-                        <input type="number" id="montoPago" step="0.01" min="0" placeholder="0.00">
-                    </div>
+                    <div class="campo-group"><label>📅 Fecha:</label><input type="date" id="fechaPago"></div>
+                    <div class="campo-group"><label>📋 Concepto:</label><select id="conceptoPago"><option value="casa">Casa</option><option value="carro">Carro</option><option value="prestamo">Préstamo</option><option value="luz">Luz</option><option value="agua">Agua</option><option value="basura">Basura</option><option value="telefono">Teléfono</option><option value="seguro">Seguro</option><option value="internet">Internet</option><option value="perros">Perros</option></select></div>
+                    <div class="campo-group"><label>💰 Monto:</label><input type="number" id="montoPago" step="0.01" min="0" placeholder="0.00"></div>
                 </div>
                 <button class="btn-registrar pago" onclick="registrarPago()">Registrar Pago</button>
             </div>
-
-            <!-- Campos para Banco -->
             <div id="camposBanco" class="oculto">
                 <div class="campos-movimiento">
-                    <div class="campo-group">
-                        <label>📅 Fecha:</label>
-                        <input type="date" id="fechaBanco">
-                    </div>
-                    <div class="campo-group">
-                        <label>🏦 Tipo:</label>
-                        <select id="tipoBanco">
-                            <option value="interes">💰 Interés (Aumenta saldo)</option>
-                            <option value="gasto">💸 Gasto Bancario (Disminuye saldo)</option>
-                        </select>
-                    </div>
-                    <div class="campo-group">
-                        <label>💰 Monto:</label>
-                        <input type="number" id="montoBanco" step="0.01" min="0" placeholder="0.00">
-                    </div>
+                    <div class="campo-group"><label>📅 Fecha:</label><input type="date" id="fechaBanco"></div>
+                    <div class="campo-group"><label>🏦 Tipo:</label><select id="tipoBanco"><option value="interes">💰 Interés (Aumenta saldo)</option><option value="gasto">💸 Gasto Bancario (Disminuye saldo)</option></select></div>
+                    <div class="campo-group"><label>💰 Monto:</label><input type="number" id="montoBanco" step="0.01" min="0" placeholder="0.00"></div>
                 </div>
                 <button class="btn-registrar banco" onclick="registrarBanco()">Registrar Movimiento Bancario</button>
             </div>
-
-            <!-- Campos para Préstamo -->
             <div id="camposPrestamo" class="oculto">
                 <div class="campos-movimiento">
-                    <div class="campo-group">
-                        <label>📅 Fecha:</label>
-                        <input type="date" id="fechaPrestamo">
-                    </div>
-                    <div class="campo-group">
-                        <label>👤 A quien presta:</label>
-                        <select id="tipoPrestamo" onchange="togglePrestamoField()">
-                            <option value="javier">Javier</option>
-                            <option value="toshio">Toshio</option>
-                            <option value="otros">Otros</option>
-                        </select>
-                    </div>
-                    <div class="campo-group" id="nombrePrestamoField" style="display: none;">
-                        <label>📝 Nombre:</label>
-                        <input type="text" id="nombrePrestamo" placeholder="Nombre de la persona">
-                    </div>
-                    <div class="campo-group">
-                        <label>💰 Monto:</label>
-                        <input type="number" id="montoPrestamo" step="0.01" min="0" placeholder="0.00">
-                    </div>
+                    <div class="campo-group"><label>📅 Fecha:</label><input type="date" id="fechaPrestamo"></div>
+                    <div class="campo-group"><label>👤 A quien presta:</label><select id="tipoPrestamo" onchange="togglePrestamoField()"><option value="javier">Javier</option><option value="toshio">Toshio</option><option value="otros">Otros</option></select></div>
+                    <div class="campo-group" id="nombrePrestamoField" style="display: none;"><label>📝 Nombre:</label><input type="text" id="nombrePrestamo" placeholder="Nombre de la persona"></div>
+                    <div class="campo-group"><label>💰 Monto:</label><input type="number" id="montoPrestamo" step="0.01" min="0" placeholder="0.00"></div>
                 </div>
                 <button class="btn-registrar prestamo" onclick="registrarPrestamo()">Registrar Préstamo</button>
             </div>
         </div>
 
-        <!-- Gráfica de Comparación -->
+        <!-- Gráfica -->
         <div class="grafica-section">
             <h2>📊 Comparativa Depósitos vs Gastos</h2>
             <div class="grafica-container">
-                <div class="barra-container">
-                    <div class="barra depositos" id="barraDepositos" style="height: 0px;"></div>
-                    <div class="barra-label">Depósitos</div>
-                    <div class="barra-valor" id="totalDepositos">$0.00</div>
-                </div>
-                <div class="barra-container">
-                    <div class="barra gastos" id="barraGastos" style="height: 0px;"></div>
-                    <div class="barra-label">Gastos</div>
-                    <div class="barra-valor" id="totalGastosGrafica">$0.00</div>
-                </div>
-                <div class="barra-container">
-                    <div class="barra ahorros" id="barraAhorros" style="height: 0px;"></div>
-                    <div class="barra-label">Ahorros</div>
-                    <div class="barra-valor" id="totalAhorrosGrafica">$0.00</div>
-                </div>
+                <div class="barra-container"><div class="barra depositos" id="barraDepositos" style="height:0px"></div><div class="barra-label">Depósitos</div><div class="barra-valor" id="totalDepositos">$0.00</div></div>
+                <div class="barra-container"><div class="barra gastos" id="barraGastos" style="height:0px"></div><div class="barra-label">Gastos</div><div class="barra-valor" id="totalGastosGrafica">$0.00</div></div>
+                <div class="barra-container"><div class="barra ahorros" id="barraAhorros" style="height:0px"></div><div class="barra-label">Ahorros</div><div class="barra-valor" id="totalAhorrosGrafica">$0.00</div></div>
             </div>
             <div class="leyenda">
-                <div class="leyenda-item">
-                    <div class="leyenda-color depositos"></div>
-                    <span>Depósitos Totales</span>
-                </div>
-                <div class="leyenda-item">
-                    <div class="leyenda-color gastos"></div>
-                    <span>Gastos Totales</span>
-                </div>
-                <div class="leyenda-item">
-                    <div class="leyenda-color ahorros"></div>
-                    <span>Ahorros Acumulados</span>
-                </div>
+                <div class="leyenda-item"><div class="leyenda-color depositos"></div><span>Depósitos Totales</span></div>
+                <div class="leyenda-item"><div class="leyenda-color gastos"></div><span>Gastos Totales</span></div>
+                <div class="leyenda-item"><div class="leyenda-color ahorros"></div><span>Ahorros Acumulados</span></div>
             </div>
         </div>
 
@@ -932,35 +774,21 @@
             <div class="historial-grid" id="historialContainer"></div>
         </div>
 
-        <!-- Resumen Mensual Detallado -->
+        <!-- Resumen Mensual -->
         <div class="resumen-mensual">
             <h2>📊 Resumen del Mes Actual</h2>
             <div class="resumen-detalle">
                 <div class="conceptos-grid" id="conceptosResumen"></div>
-                <div class="resumen-global">
-                    <h3>Resumen Global</h3>
-                    <div id="resumenGlobal"></div>
-                </div>
+                <div class="resumen-global"><h3>Resumen Global</h3><div id="resumenGlobal"></div></div>
             </div>
-            <button class="btn-registrar" style="margin-top: 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="cerrarMes()">📅 Cerrar Mes y Ver Resumen</button>
+            <button class="btn-registrar" style="margin-top:20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="cerrarMes()">📅 Cerrar Mes y Ver Resumen</button>
         </div>
 
         <!-- Tabla de Movimientos -->
         <div class="tabla-gastos">
             <h2>📋 Historial de Movimientos</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Tipo</th>
-                        <th>Concepto</th>
-                        <th>Detalle</th>
-                        <th>Monto</th>
-                        <th>Javier</th>
-                        <th>Toshio</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Fecha</th><th>Tipo</th><th>Concepto</th><th>Detalle</th><th>Monto</th><th>Javier</th><th>Toshio</th><th>Acción</th></tr></thead>
                 <tbody id="movimientosBody"></tbody>
             </table>
         </div>
@@ -969,14 +797,10 @@
     <script>
         // ==================== CONFIGURACIÓN ====================
         // 🔴 REEMPLAZA ESTA URL CON LA DE TU WEB APP DE APPS SCRIPT 🔴
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysAU1HfSklThRJgNTrc95IxbEaAtHkktrQGkxHTgIBZXY1ddnIXBg2ZCI79Jt3s_Y/exec'; 
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz.../exec'; 
 
         // ==================== LOGIN ====================
-        const USUARIOS = {
-            javier: 'jav2385',
-            toshio: 'tss8127'
-        };
-
+        const USUARIOS = { javier: 'jav2385', toshio: 'tss8127' };
         function login() {
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
@@ -989,7 +813,6 @@
                 document.getElementById('loginError').innerText = 'Usuario o contraseña incorrectos';
             }
         }
-
         function logout() {
             localStorage.removeItem('loggedUser');
             document.getElementById('loginContainer').style.display = 'block';
@@ -1009,34 +832,30 @@
             internet: { nombre: 'Internet', javier: 50, toshio: 50, montoMensual: 34 },
             perros: { nombre: 'Perros', javier: 50, toshio: 50, montoMensual: 54.03 }
         };
-
-        const TOTALES_PERSONA = {
-            javier: 374.88,
-            toshio: 491.06
-        };
+        const TOTALES_PERSONA = { javier: 374.88, toshio: 491.06 };
 
         // Estado inicial
-        const estadoInicial = {
+        let estado = {
             montoInicial: 0,
             saldoActual: 0,
             depositos: { javier: 0, toshio: 0 },
             gastos: { total: 0, porConcepto: {} },
             ahorro: { javier: 0, toshio: 0 },
-            prestamos: { javier: [], toshio: [], otros: [] }, // cada préstamo: { id, fecha, montoOriginal, saldoPendiente, nombre }
+            prestamos: { javier: [], toshio: [], otros: [] },
             conceptos: {},
             pendientesMesesAnteriores: [],
             historialCierres: [],
             movimientos: []
         };
 
-        let estado = JSON.parse(JSON.stringify(estadoInicial));
-
         // Inicializar conceptos
-        Object.keys(GASTOS_FIJOS).forEach(concepto => {
-            estado.conceptos[concepto] = { pagado: 0, diferencia: 0 };
-        });
+        function inicializarConceptos() {
+            Object.keys(GASTOS_FIJOS).forEach(concepto => {
+                if (!estado.conceptos[concepto]) estado.conceptos[concepto] = { pagado: 0, diferencia: 0 };
+            });
+        }
 
-        // ==================== FUNCIONES DE PERSISTENCIA (Apps Script) ====================
+        // ==================== PERSISTENCIA (APPS SCRIPT) ====================
         async function cargarDatos() {
             try {
                 const response = await fetch(APPS_SCRIPT_URL);
@@ -1044,39 +863,33 @@
                 const data = await response.json();
                 if (data && data.estado) {
                     estado = data.estado;
-                    // Asegurar estructura de préstamos (migración)
-                    ['javier', 'toshio', 'otros'].forEach(categoria => {
-                        if (estado.prestamos[categoria] && estado.prestamos[categoria].length > 0) {
-                            estado.prestamos[categoria] = estado.prestamos[categoria].map(p => {
-                                if (p.saldoPendiente === undefined) {
-                                    p.saldoPendiente = p.montoOriginal || p.monto;
-                                    p.montoOriginal = p.montoOriginal || p.monto;
-                                }
+                    // Asegurar estructura de préstamos
+                    ['javier', 'toshio', 'otros'].forEach(cat => {
+                        if (estado.prestamos[cat] && estado.prestamos[cat].length) {
+                            estado.prestamos[cat] = estado.prestamos[cat].map(p => {
+                                if (p.saldoPendiente === undefined) p.saldoPendiente = p.montoOriginal || p.monto;
+                                if (p.montoOriginal === undefined) p.montoOriginal = p.monto || p.saldoPendiente;
                                 return p;
                             });
-                        } else {
-                            estado.prestamos[categoria] = [];
-                        }
+                        } else estado.prestamos[cat] = [];
                     });
-                    Object.keys(GASTOS_FIJOS).forEach(concepto => {
-                        if (!estado.conceptos[concepto]) {
-                            estado.conceptos[concepto] = { pagado: 0, diferencia: 0 };
-                        }
-                    });
+                    inicializarConceptos();
                 } else {
+                    inicializarConceptos();
                     await guardarDatos();
                 }
+                // Mostrar el monto inicial actual en el campo
+                document.getElementById('montoInicial').value = estado.montoInicial;
                 actualizarUI();
             } catch (error) {
-                console.error('Error al cargar desde Apps Script:', error);
+                console.error(error);
                 const local = localStorage.getItem('controlGastosBackup');
                 if (local) {
                     estado = JSON.parse(local);
+                    inicializarConceptos();
                     actualizarUI();
-                    alert('Se cargaron datos locales (offline). Los cambios no se guardarán hasta que se restablezca la conexión.');
-                } else {
-                    alert('No se pudo conectar con Google Sheets. Verifica la URL de la Web App.');
-                }
+                    alert('Cargando datos locales (offline)');
+                } else alert('No se pudo conectar con Google Sheets. Verifica la URL.');
             }
         }
 
@@ -1090,194 +903,131 @@
                 });
                 localStorage.setItem('controlGastosBackup', JSON.stringify(estado));
             } catch (error) {
-                console.error('Error al guardar en Apps Script:', error);
+                console.error(error);
                 localStorage.setItem('controlGastosBackup', JSON.stringify(estado));
-                alert('Error de conexión. Los cambios se guardaron localmente (backup).');
+                alert('Error de conexión. Datos guardados localmente.');
             }
         }
 
         // ==================== RECÁLCULO DESDE MOVIMIENTOS ====================
         function recalcularEstadoDesdeMovimientos() {
-            // Guardar datos que no se reconstruyen desde movimientos
             const montoInicialGuardado = estado.montoInicial;
             const historialGuardado = estado.historialCierres;
             const movimientos = estado.movimientos;
+            // Reiniciar
+            estado = {
+                montoInicial: montoInicialGuardado,
+                saldoActual: montoInicialGuardado,
+                depositos: { javier: 0, toshio: 0 },
+                gastos: { total: 0, porConcepto: {} },
+                ahorro: { javier: 0, toshio: 0 },
+                prestamos: { javier: [], toshio: [], otros: [] },
+                conceptos: {},
+                pendientesMesesAnteriores: [],
+                historialCierres: historialGuardado,
+                movimientos: movimientos
+            };
+            inicializarConceptos();
 
-            // Reiniciar estado
-            estado = JSON.parse(JSON.stringify(estadoInicial));
-            estado.montoInicial = montoInicialGuardado;
-            estado.historialCierres = historialGuardado;
-            estado.movimientos = movimientos;
-
-            // Inicializar conceptos
-            Object.keys(GASTOS_FIJOS).forEach(concepto => {
-                estado.conceptos[concepto] = { pagado: 0, diferencia: 0 };
-            });
-
-            // Aplicar movimientos en orden
             for (const mov of estado.movimientos) {
                 switch (mov.tipo) {
-                    case 'DEPÓSITO':
-                        {
-                            const persona = mov.concepto === 'Javier' ? 'javier' : 'toshio';
-                            estado.depositos[persona] += mov.monto;
-                            estado.saldoActual += mov.monto;
-                            const debePagar = TOTALES_PERSONA[persona];
-                            if (estado.depositos[persona] > debePagar) {
-                                const excedente = estado.depositos[persona] - debePagar;
-                                estado.ahorro[persona] += excedente;
-                                estado.depositos[persona] = debePagar;
-                            }
-                        }
-                        break;
-                    case 'PAGO':
-                        {
-                            const concepto = Object.keys(GASTOS_FIJOS).find(key => GASTOS_FIJOS[key].nombre === mov.concepto);
-                            if (concepto) {
-                                const gasto = GASTOS_FIJOS[concepto];
-                                if (!estado.conceptos[concepto]) estado.conceptos[concepto] = { pagado: 0, diferencia: 0 };
-                                estado.conceptos[concepto].pagado += mov.monto;
-                                estado.conceptos[concepto].diferencia = estado.conceptos[concepto].pagado - gasto.montoMensual;
-                                estado.gastos.total += mov.monto;
-                                estado.saldoActual -= mov.monto;
-                            }
-                        }
-                        break;
-                    case 'INTERÉS BANCARIO':
+                    case 'DEPÓSITO': {
+                        const persona = mov.concepto === 'Javier' ? 'javier' : 'toshio';
+                        estado.depositos[persona] += mov.monto;
                         estado.saldoActual += mov.monto;
+                        const debe = TOTALES_PERSONA[persona];
+                        if (estado.depositos[persona] > debe) {
+                            const excedente = estado.depositos[persona] - debe;
+                            estado.ahorro[persona] += excedente;
+                            estado.depositos[persona] = debe;
+                        }
                         break;
-                    case 'GASTO BANCARIO':
-                        estado.saldoActual -= mov.monto;
-                        break;
-                    case 'PRÉSTAMO':
-                        {
-                            let categoria = 'otros';
-                            if (mov.concepto.includes('Javier')) categoria = 'javier';
-                            else if (mov.concepto.includes('Toshio')) categoria = 'toshio';
-                            const nombre = mov.detalle || (categoria === 'otros' ? 'Desconocido' : (categoria === 'javier' ? 'Javier' : 'Toshio'));
-                            estado.prestamos[categoria].push({
-                                id: mov.id,
-                                fecha: mov.fecha,
-                                montoOriginal: mov.monto,
-                                saldoPendiente: mov.monto,
-                                nombre: nombre
-                            });
+                    }
+                    case 'PAGO': {
+                        const concepto = Object.keys(GASTOS_FIJOS).find(k => GASTOS_FIJOS[k].nombre === mov.concepto);
+                        if (concepto) {
+                            const g = GASTOS_FIJOS[concepto];
+                            estado.conceptos[concepto].pagado += mov.monto;
+                            estado.conceptos[concepto].diferencia = estado.conceptos[concepto].pagado - g.montoMensual;
+                            estado.gastos.total += mov.monto;
                             estado.saldoActual -= mov.monto;
                         }
                         break;
-                    case 'PAGO PRÉSTAMO':
-                        {
-                            // Buscar el préstamo correspondiente por ID
-                            let encontrado = false;
-                            for (let cat of ['javier', 'toshio', 'otros']) {
-                                const prestamo = estado.prestamos[cat].find(p => p.id === mov.prestamoId);
-                                if (prestamo) {
-                                    prestamo.saldoPendiente -= mov.monto;
-                                    if (prestamo.saldoPendiente <= 0) {
-                                        // Eliminar préstamo si queda en cero o negativo
-                                        estado.prestamos[cat] = estado.prestamos[cat].filter(p => p.id !== mov.prestamoId);
-                                    }
-                                    encontrado = true;
-                                    break;
-                                }
+                    }
+                    case 'INTERÉS BANCARIO': estado.saldoActual += mov.monto; break;
+                    case 'GASTO BANCARIO': estado.saldoActual -= mov.monto; break;
+                    case 'PRÉSTAMO': {
+                        let cat = 'otros';
+                        if (mov.concepto.includes('Javier')) cat = 'javier';
+                        else if (mov.concepto.includes('Toshio')) cat = 'toshio';
+                        const nombre = mov.detalle || (cat === 'otros' ? 'Desconocido' : (cat === 'javier' ? 'Javier' : 'Toshio'));
+                        estado.prestamos[cat].push({
+                            id: mov.id,
+                            fecha: mov.fecha,
+                            montoOriginal: mov.monto,
+                            saldoPendiente: mov.monto,
+                            nombre: nombre
+                        });
+                        estado.saldoActual -= mov.monto;
+                        break;
+                    }
+                    case 'PAGO PRÉSTAMO': {
+                        let encontrado = false;
+                        for (let cat of ['javier', 'toshio', 'otros']) {
+                            const idx = estado.prestamos[cat].findIndex(p => p.id === mov.prestamoId);
+                            if (idx !== -1) {
+                                estado.prestamos[cat][idx].saldoPendiente -= mov.monto;
+                                if (estado.prestamos[cat][idx].saldoPendiente <= 0)
+                                    estado.prestamos[cat].splice(idx, 1);
+                                encontrado = true;
+                                break;
                             }
-                            if (!encontrado) {
-                                // Si no se encuentra, podría ser un pago de préstamo antiguo sin ID (migración)
-                                // En ese caso, no hacemos nada, pero el saldo ya se ajustó abajo
-                            }
+                        }
+                        estado.saldoActual += mov.monto;
+                        break;
+                    }
+                    case 'RETIRO AHORRO': {
+                        if (mov.concepto.includes('Javier')) {
+                            estado.ahorro.javier -= mov.monto;
+                            estado.saldoActual += mov.monto;
+                        } else if (mov.concepto.includes('Toshio')) {
+                            estado.ahorro.toshio -= mov.monto;
                             estado.saldoActual += mov.monto;
                         }
                         break;
-                    case 'RETIRO AHORRO':
-                        {
-                            if (mov.concepto.includes('Javier')) {
-                                estado.ahorro.javier -= mov.monto;
-                                estado.saldoActual += mov.monto;
-                            } else if (mov.concepto.includes('Toshio')) {
-                                estado.ahorro.toshio -= mov.monto;
-                                estado.saldoActual += mov.monto;
-                            }
+                    }
+                    case 'PAGO PENDIENTE': {
+                        const concepto = Object.keys(GASTOS_FIJOS).find(k => GASTOS_FIJOS[k].nombre === mov.concepto);
+                        if (concepto) {
+                            const g = GASTOS_FIJOS[concepto];
+                            estado.conceptos[concepto].pagado += mov.monto;
+                            estado.conceptos[concepto].diferencia = estado.conceptos[concepto].pagado - g.montoMensual;
+                            estado.gastos.total += mov.monto;
+                            estado.saldoActual -= mov.monto;
                         }
                         break;
-                    case 'PAGO PENDIENTE':
-                        {
-                            const concepto = Object.keys(GASTOS_FIJOS).find(key => GASTOS_FIJOS[key].nombre === mov.concepto);
-                            if (concepto) {
-                                const gasto = GASTOS_FIJOS[concepto];
-                                if (!estado.conceptos[concepto]) estado.conceptos[concepto] = { pagado: 0, diferencia: 0 };
-                                estado.conceptos[concepto].pagado += mov.monto;
-                                estado.conceptos[concepto].diferencia = estado.conceptos[concepto].pagado - gasto.montoMensual;
-                                estado.gastos.total += mov.monto;
-                                estado.saldoActual -= mov.monto;
-                            }
-                        }
-                        break;
-                    default:
-                        console.warn('Tipo no manejado en recálculo:', mov.tipo);
+                    }
                 }
             }
-
-            // Recalcular totales de préstamos para UI
-            actualizarUI();
         }
 
-        // ==================== FUNCIÓN DE REVERSIÓN ====================
-        async function reversarMovimiento(id, motivo) {
-            const index = estado.movimientos.findIndex(m => m.id === id);
-            if (index === -1) {
-                alert('Movimiento no encontrado.');
+        // ==================== CAMBIAR SALDO INICIAL ====================
+        async function cambiarMontoInicial() {
+            const nuevoMonto = parseFloat(document.getElementById('montoInicial').value);
+            if (isNaN(nuevoMonto) || nuevoMonto < 0) {
+                alert('Ingrese un monto válido (mayor o igual a 0)');
                 return;
             }
-            const mov = estado.movimientos[index];
-            if (!confirm(`¿Reversar movimiento del ${mov.fecha} (${mov.tipo} - ${mov.concepto}) por motivo: ${motivo}?`)) return;
-            estado.movimientos.splice(index, 1);
-            recalcularEstadoDesdeMovimientos();
+            const diferencia = nuevoMonto - estado.montoInicial;
+            estado.montoInicial = nuevoMonto;
+            estado.saldoActual += diferencia;
             await guardarDatos();
             actualizarUI();
-            alert('Movimiento reversado correctamente.');
-        }
-
-        // ==================== FUNCIONES DE INTERFAZ ====================
-        function seleccionarTipo(tipo, boton) {
-            document.querySelectorAll('.tipo-btn').forEach(btn => btn.classList.remove('activo'));
-            boton.classList.add('activo');
-            document.getElementById('camposDeposito').classList.add('oculto');
-            document.getElementById('camposPago').classList.add('oculto');
-            document.getElementById('camposBanco').classList.add('oculto');
-            document.getElementById('camposPrestamo').classList.add('oculto');
-            if (tipo === 'deposito') document.getElementById('camposDeposito').classList.remove('oculto');
-            else if (tipo === 'pago') document.getElementById('camposPago').classList.remove('oculto');
-            else if (tipo === 'banco') document.getElementById('camposBanco').classList.remove('oculto');
-            else if (tipo === 'prestamo') document.getElementById('camposPrestamo').classList.remove('oculto');
-        }
-
-        function togglePrestamoField() {
-            const tipo = document.getElementById('tipoPrestamo').value;
-            document.getElementById('nombrePrestamoField').style.display = tipo === 'otros' ? 'block' : 'none';
+            alert(`Saldo inicial actualizado a $${nuevoMonto.toFixed(2)}`);
         }
 
         // ==================== FUNCIONES DE NEGOCIO ====================
-        async function establecerMontoInicial() {
-            if (estado.montoInicial > 0) {
-                alert('El monto inicial ya fue establecido y no se puede modificar');
-                return;
-            }
-            const monto = parseFloat(document.getElementById('montoInicial').value);
-            if (isNaN(monto) || monto <= 0) {
-                alert('Ingrese un monto válido mayor a 0');
-                return;
-            }
-            estado.montoInicial = monto;
-            estado.saldoActual = monto;
-            document.getElementById('btnEstablecerMonto').disabled = true;
-            document.getElementById('montoInicial').disabled = true;
-            await guardarDatos();
-            actualizarUI();
-            alert('Saldo inicial establecido correctamente');
-        }
-
         async function registrarDeposito() {
-            if (estado.montoInicial === 0) { alert('Primero establezca el saldo inicial'); return; }
             const fecha = document.getElementById('fechaDeposito').value;
             const persona = document.getElementById('personaDeposito').value;
             const quincena = document.getElementById('quincenaDeposito').value;
@@ -1286,13 +1036,12 @@
 
             estado.depositos[persona] += monto;
             estado.saldoActual += monto;
-            const debePagar = TOTALES_PERSONA[persona];
-            if (estado.depositos[persona] > debePagar) {
-                const excedente = estado.depositos[persona] - debePagar;
+            const debe = TOTALES_PERSONA[persona];
+            if (estado.depositos[persona] > debe) {
+                const excedente = estado.depositos[persona] - debe;
                 estado.ahorro[persona] += excedente;
-                estado.depositos[persona] = debePagar;
+                estado.depositos[persona] = debe;
             }
-
             estado.movimientos.push({
                 id: Date.now() + Math.random().toString(36).substr(2, 8),
                 fecha, tipo: 'DEPÓSITO', concepto: persona === 'javier' ? 'Javier' : 'Toshio',
@@ -1307,19 +1056,15 @@
         }
 
         async function registrarPago() {
-            if (estado.montoInicial === 0) { alert('Primero establezca el saldo inicial'); return; }
             const fecha = document.getElementById('fechaPago').value;
             const concepto = document.getElementById('conceptoPago').value;
             const monto = parseFloat(document.getElementById('montoPago').value);
             if (!fecha || isNaN(monto) || monto <= 0) { alert('Complete todos los campos'); return; }
-
             const gasto = GASTOS_FIJOS[concepto];
-            if (!estado.conceptos[concepto]) estado.conceptos[concepto] = { pagado: 0, diferencia: 0 };
             estado.conceptos[concepto].pagado += monto;
             estado.conceptos[concepto].diferencia = estado.conceptos[concepto].pagado - gasto.montoMensual;
             estado.gastos.total += monto;
             estado.saldoActual -= monto;
-
             estado.movimientos.push({
                 id: Date.now() + Math.random().toString(36).substr(2, 8),
                 fecha, tipo: 'PAGO', concepto: gasto.nombre, detalle: 'Mensual', monto,
@@ -1333,36 +1078,19 @@
         }
 
         async function registrarBanco() {
-            if (estado.montoInicial === 0) { alert('Primero establezca el saldo inicial'); return; }
             const fecha = document.getElementById('fechaBanco').value;
             const tipo = document.getElementById('tipoBanco').value;
             const monto = parseFloat(document.getElementById('montoBanco').value);
             if (!fecha || isNaN(monto) || monto <= 0) { alert('Complete todos los campos'); return; }
-
-            let tipoMovimiento, concepto, detalle;
+            let tipoMov, concepto, detalle;
             if (tipo === 'interes') {
                 estado.saldoActual += monto;
-                tipoMovimiento = 'INTERÉS BANCARIO';
-                concepto = 'Interés';
-                detalle = '➕ Aumenta saldo';
+                tipoMov = 'INTERÉS BANCARIO'; concepto = 'Interés'; detalle = '➕ Aumenta saldo';
             } else {
                 estado.saldoActual -= monto;
-                tipoMovimiento = 'GASTO BANCARIO';
-                concepto = 'Gasto';
-                detalle = '➖ Disminuye saldo';
+                tipoMov = 'GASTO BANCARIO'; concepto = 'Gasto'; detalle = '➖ Disminuye saldo';
             }
-
-            estado.movimientos.push({
-                id: Date.now() + Math.random().toString(36).substr(2, 8),
-                fecha,
-                tipo: tipoMovimiento,
-                concepto,
-                detalle,
-                monto,
-                javier: 0,
-                toshio: 0
-            });
-
+            estado.movimientos.push({ id: Date.now() + Math.random().toString(36).substr(2, 8), fecha, tipo: tipoMov, concepto, detalle, monto, javier: 0, toshio: 0 });
             await guardarDatos();
             actualizarUI();
             document.getElementById('montoBanco').value = '';
@@ -1370,28 +1098,19 @@
         }
 
         async function registrarPrestamo() {
-            if (estado.montoInicial === 0) { alert('Primero establezca el saldo inicial'); return; }
             const fecha = document.getElementById('fechaPrestamo').value;
             const tipo = document.getElementById('tipoPrestamo').value;
             const monto = parseFloat(document.getElementById('montoPrestamo').value);
             const nombre = tipo === 'otros' ? document.getElementById('nombrePrestamo').value : '';
             if (!fecha || isNaN(monto) || monto <= 0) { alert('Complete los campos'); return; }
             if (tipo === 'otros' && !nombre) { alert('Ingrese el nombre'); return; }
-
             const id = Date.now() + Math.random().toString(36).substr(2, 8);
             const prestamoInfo = { id, fecha, montoOriginal: monto, saldoPendiente: monto, nombre: nombre || (tipo === 'javier' ? 'Javier' : 'Toshio') };
             if (tipo === 'javier') estado.prestamos.javier.push(prestamoInfo);
             else if (tipo === 'toshio') estado.prestamos.toshio.push(prestamoInfo);
             else estado.prestamos.otros.push(prestamoInfo);
             estado.saldoActual -= monto;
-
-            estado.movimientos.push({
-                id: id,
-                fecha, tipo: 'PRÉSTAMO', concepto: `Préstamo a ${prestamoInfo.nombre}`,
-                detalle: tipo === 'otros' ? nombre : `a ${tipo}`, monto,
-                javier: tipo === 'javier' ? monto : 0,
-                toshio: tipo === 'toshio' ? monto : 0
-            });
+            estado.movimientos.push({ id, fecha, tipo: 'PRÉSTAMO', concepto: `Préstamo a ${prestamoInfo.nombre}`, detalle: tipo === 'otros' ? nombre : `a ${tipo}`, monto, javier: tipo === 'javier' ? monto : 0, toshio: tipo === 'toshio' ? monto : 0 });
             await guardarDatos();
             actualizarUI();
             document.getElementById('montoPrestamo').value = '';
@@ -1403,39 +1122,23 @@
         async function pagarPrestamo(categoria, index) {
             const prestamo = estado.prestamos[categoria][index];
             if (!prestamo) return;
-            const montoPendiente = prestamo.saldoPendiente;
-            let montoPagar = parseFloat(prompt(`Monto a pagar de ${prestamo.nombre} (Saldo pendiente: $${montoPendiente.toFixed(2)}):`, montoPendiente.toFixed(2)));
-            if (isNaN(montoPagar) || montoPagar <= 0) {
-                alert('Monto inválido');
-                return;
-            }
-            if (montoPagar > montoPendiente) {
-                alert(`No puede pagar más de lo que debe. Saldo pendiente: $${montoPendiente.toFixed(2)}`);
-                return;
-            }
-
-            // Actualizar saldo pendiente
+            let montoPagar = parseFloat(prompt(`Monto a pagar de ${prestamo.nombre} (Saldo pendiente: $${prestamo.saldoPendiente.toFixed(2)}):`, prestamo.saldoPendiente.toFixed(2)));
+            if (isNaN(montoPagar) || montoPagar <= 0) { alert('Monto inválido'); return; }
+            if (montoPagar > prestamo.saldoPendiente) { alert(`No puede pagar más de lo que debe.`); return; }
             prestamo.saldoPendiente -= montoPagar;
             estado.saldoActual += montoPagar;
-
-            // Registrar movimiento
             estado.movimientos.push({
                 id: Date.now() + Math.random().toString(36).substr(2, 8),
                 fecha: new Date().toISOString().split('T')[0],
                 tipo: 'PAGO PRÉSTAMO',
                 concepto: `Pago parcial de ${prestamo.nombre}`,
-                detalle: `Abono a préstamo`,
+                detalle: 'Abono',
                 monto: montoPagar,
                 prestamoId: prestamo.id,
                 javier: categoria === 'javier' ? montoPagar : 0,
                 toshio: categoria === 'toshio' ? montoPagar : 0
             });
-
-            // Si el saldo pendiente es cero, eliminar el préstamo
-            if (prestamo.saldoPendiente <= 0) {
-                estado.prestamos[categoria].splice(index, 1);
-            }
-
+            if (prestamo.saldoPendiente <= 0) estado.prestamos[categoria].splice(index, 1);
             await guardarDatos();
             actualizarUI();
             alert(`Pago de $${montoPagar.toFixed(2)} registrado. Saldo restante: $${prestamo.saldoPendiente > 0 ? prestamo.saldoPendiente.toFixed(2) : '0.00'}`);
@@ -1446,7 +1149,6 @@
             const pendiente = estado.pendientesMesesAnteriores.find(p => p.concepto === concepto);
             if (!pendiente) return;
             const montoPagar = pendiente.monto;
-            if (!estado.conceptos[concepto]) estado.conceptos[concepto] = { pagado: 0, diferencia: 0 };
             estado.conceptos[concepto].pagado += montoPagar;
             estado.conceptos[concepto].diferencia = estado.conceptos[concepto].pagado - gasto.montoMensual;
             estado.gastos.total += montoPagar;
@@ -1472,15 +1174,15 @@
             if (persona === 'javier') {
                 input = document.getElementById('retiroJavier');
                 monto = parseFloat(input.value);
-                if (isNaN(monto) || monto <= 0) { alert('Ingrese monto válido'); return; }
-                if (monto > estado.ahorro.javier) { alert(`Javier solo tiene $${estado.ahorro.javier.toFixed(2)} de ahorro`); return; }
+                if (isNaN(monto) || monto <= 0) { alert('Monto válido'); return; }
+                if (monto > estado.ahorro.javier) { alert(`Javier solo tiene $${estado.ahorro.javier.toFixed(2)}`); return; }
                 estado.ahorro.javier -= monto;
                 estado.saldoActual += monto;
             } else {
                 input = document.getElementById('retiroToshio');
                 monto = parseFloat(input.value);
-                if (isNaN(monto) || monto <= 0) { alert('Ingrese monto válido'); return; }
-                if (monto > estado.ahorro.toshio) { alert(`Toshio solo tiene $${estado.ahorro.toshio.toFixed(2)} de ahorro`); return; }
+                if (isNaN(monto) || monto <= 0) { alert('Monto válido'); return; }
+                if (monto > estado.ahorro.toshio) { alert(`Toshio solo tiene $${estado.ahorro.toshio.toFixed(2)}`); return; }
                 estado.ahorro.toshio -= monto;
                 estado.saldoActual += monto;
             }
@@ -1489,8 +1191,7 @@
                 fecha: new Date().toISOString().split('T')[0],
                 tipo: 'RETIRO AHORRO',
                 concepto: `Retiro ahorro ${persona}`,
-                detalle: '',
-                monto,
+                detalle: '', monto,
                 javier: persona === 'javier' ? monto : 0,
                 toshio: persona === 'toshio' ? monto : 0
             });
@@ -1501,94 +1202,34 @@
         }
 
         async function cerrarMes() {
-            const mes = prompt("Ingrese el mes que está cerrando (ejemplo: 1 para Enero, 2 para Febrero, etc.):");
+            const mes = prompt("Mes (1-12):");
             if (!mes) return;
-            const año = prompt("Ingrese el año (ejemplo: 2025):");
+            const año = prompt("Año:");
             if (!año) return;
             const mesNombre = new Date(año, mes-1, 1).toLocaleString('es', { month: 'long' });
-            if (!confirm(`¿Cerrar mes de ${mesNombre} ${año}?`)) return;
-
+            if (!confirm(`Cerrar ${mesNombre} ${año}?`)) return;
             const totalDepositos = estado.depositos.javier + estado.depositos.toshio;
             const totalGastos = estado.gastos.total;
             const totalAhorros = estado.ahorro.javier + estado.ahorro.toshio;
-            const totalPrestamosJavier = estado.prestamos.javier.reduce((s, p) => s + p.saldoPendiente, 0);
-            const totalPrestamosToshio = estado.prestamos.toshio.reduce((s, p) => s + p.saldoPendiente, 0);
-            const totalPrestamosOtros = estado.prestamos.otros.reduce((s, p) => s + p.saldoPendiente, 0);
-            const totalPrestamos = totalPrestamosJavier + totalPrestamosToshio + totalPrestamosOtros;
-
-            const conceptosConExcedente = [], conceptosConFaltante = [];
-            Object.entries(estado.conceptos).forEach(([key, value]) => {
-                if (value.diferencia > 0) conceptosConExcedente.push(`${GASTOS_FIJOS[key].nombre}: +$${value.diferencia.toFixed(2)}`);
-                else if (value.diferencia < 0) conceptosConFaltante.push(`${GASTOS_FIJOS[key].nombre}: -$${Math.abs(value.diferencia).toFixed(2)}`);
-            });
-
+            const totalPrestamosJavier = estado.prestamos.javier.reduce((s,p)=>s+p.saldoPendiente,0);
+            const totalPrestamosToshio = estado.prestamos.toshio.reduce((s,p)=>s+p.saldoPendiente,0);
+            const totalPrestamosOtros = estado.prestamos.otros.reduce((s,p)=>s+p.saldoPendiente,0);
             const noPagados = [];
-            Object.entries(estado.conceptos).forEach(([key, value]) => {
-                if (value.pagado === 0) {
-                    noPagados.push({ concepto: key, nombre: GASTOS_FIJOS[key].nombre, monto: GASTOS_FIJOS[key].montoMensual });
-                }
+            Object.entries(estado.conceptos).forEach(([key,val])=>{
+                if(val.pagado===0) noPagados.push({concepto:key, nombre:GASTOS_FIJOS[key].nombre, monto:GASTOS_FIJOS[key].montoMensual});
             });
             estado.pendientesMesesAnteriores = noPagados;
-
-            const resumenHistorial = {
-                fecha: new Date().toISOString(),
-                mes: mesNombre,
-                año,
-                totalDepositos,
-                totalGastos,
-                totalAhorros,
-                totalPrestamos,
-                saldoFinal: estado.saldoActual,
-                detallesConceptos: Object.entries(estado.conceptos).map(([key, val]) => ({
-                    concepto: GASTOS_FIJOS[key].nombre,
-                    pagado: val.pagado,
-                    diferencia: val.diferencia
-                }))
-            };
-            estado.historialCierres.push(resumenHistorial);
-
-            const resumen = `
-📊 CIERRE DE MES: ${mesNombre} ${año}
-
-💰 DEPÓSITOS DEL MES:
-   Javier: $${estado.depositos.javier.toFixed(2)} de $374.88
-   Toshio: $${estado.depositos.toshio.toFixed(2)} de $491.06
-   Total Depositado: $${totalDepositos.toFixed(2)}
-
-💸 GASTOS DEL MES:
-   Total Gastado: $${totalGastos.toFixed(2)}
-
-💰 AHORROS ACUMULADOS:
-   Javier: $${estado.ahorro.javier.toFixed(2)}
-   Toshio: $${estado.ahorro.toshio.toFixed(2)}
-   Total Ahorros: $${totalAhorros.toFixed(2)}
-
-💰 PRÉSTAMOS (saldo pendiente):
-   Javier: $${totalPrestamosJavier.toFixed(2)}
-   Toshio: $${totalPrestamosToshio.toFixed(2)}
-   Otros: $${totalPrestamosOtros.toFixed(2)}
-   Total Préstamos: $${totalPrestamos.toFixed(2)}
-
-📈 EXCEDENTES: ${conceptosConExcedente.length ? conceptosConExcedente.join(', ') : 'Ninguno'}
-📉 FALTANTES: ${conceptosConFaltante.length ? conceptosConFaltante.join(', ') : 'Ninguno'}
-
-⚠️ NO PAGADOS (pasan al próximo mes):
-${noPagados.length ? noPagados.map(p => `   ${p.nombre}: $${p.monto.toFixed(2)}`).join('\n') : '   Todos pagados'}
-
-📊 COMPARATIVA: Depósitos - Gastos = $${(totalDepositos - totalGastos).toFixed(2)}
-💰 SALDO FINAL EN BANCO: $${estado.saldoActual.toFixed(2)}
-            `;
-            alert(resumen);
-
-            estado.depositos.javier = 0;
-            estado.depositos.toshio = 0;
-            estado.gastos.total = 0;
-            Object.keys(estado.conceptos).forEach(concepto => {
-                estado.conceptos[concepto].pagado = 0;
-                estado.conceptos[concepto].diferencia = 0;
+            estado.historialCierres.push({
+                fecha: new Date().toISOString(), mes: mesNombre, año, totalDepositos, totalGastos, totalAhorros,
+                totalPrestamos: totalPrestamosJavier+totalPrestamosToshio+totalPrestamosOtros, saldoFinal: estado.saldoActual,
+                detallesConceptos: Object.entries(estado.conceptos).map(([k,v])=>({concepto:GASTOS_FIJOS[k].nombre, pagado:v.pagado, diferencia:v.diferencia}))
             });
+            alert(`Mes cerrado. Saldo final: $${estado.saldoActual.toFixed(2)}`);
+            estado.depositos.javier = 0; estado.depositos.toshio = 0;
+            estado.gastos.total = 0;
+            Object.keys(estado.conceptos).forEach(k=>{ estado.conceptos[k].pagado=0; estado.conceptos[k].diferencia=0; });
             estado.montoInicial = estado.saldoActual;
-
+            document.getElementById('montoInicial').value = estado.montoInicial;
             await guardarDatos();
             actualizarUI();
         }
@@ -1597,9 +1238,9 @@ ${noPagados.length ? noPagados.map(p => `   ${p.nombre}: $${p.monto.toFixed(2)}`
         function actualizarUI() {
             const totalDepositos = estado.depositos.javier + estado.depositos.toshio;
             const totalAhorros = estado.ahorro.javier + estado.ahorro.toshio;
-            const totalPrestamosJavier = estado.prestamos.javier.reduce((s, p) => s + p.saldoPendiente, 0);
-            const totalPrestamosToshio = estado.prestamos.toshio.reduce((s, p) => s + p.saldoPendiente, 0);
-            const totalPrestamosOtros = estado.prestamos.otros.reduce((s, p) => s + p.saldoPendiente, 0);
+            const totalPrestamosJavier = estado.prestamos.javier.reduce((s,p)=>s+p.saldoPendiente,0);
+            const totalPrestamosToshio = estado.prestamos.toshio.reduce((s,p)=>s+p.saldoPendiente,0);
+            const totalPrestamosOtros = estado.prestamos.otros.reduce((s,p)=>s+p.saldoPendiente,0);
             const disponibleGastos = estado.saldoActual - totalAhorros;
 
             document.getElementById('montoFijoDisplay').textContent = `$${estado.montoInicial.toFixed(2)}`;
@@ -1618,120 +1259,49 @@ ${noPagados.length ? noPagados.map(p => `   ${p.nombre}: $${p.monto.toFixed(2)}`
             document.getElementById('ahorroTotal').textContent = `$${totalAhorros.toFixed(2)}`;
             document.getElementById('ahorroJavierTotal').textContent = `$${estado.ahorro.javier.toFixed(2)}`;
             document.getElementById('ahorroToshioTotal').textContent = `$${estado.ahorro.toshio.toFixed(2)}`;
-
             document.getElementById('ahorroJavierIndividual').textContent = `$${estado.ahorro.javier.toFixed(2)}`;
             document.getElementById('ahorroToshioIndividual').textContent = `$${estado.ahorro.toshio.toFixed(2)}`;
-
             document.getElementById('prestamosJavierTotal').textContent = `$${totalPrestamosJavier.toFixed(2)}`;
             document.getElementById('prestamosToshioTotal').textContent = `$${totalPrestamosToshio.toFixed(2)}`;
             document.getElementById('prestamosOtrosTotal').textContent = `$${totalPrestamosOtros.toFixed(2)}`;
 
-            // Renderizar listas de préstamos con botón de pago parcial
-            document.getElementById('prestamosJavierLista').innerHTML = estado.prestamos.javier.length 
-                ? estado.prestamos.javier.map((p, i) => `
-                    <div class="prestamo-item">
-                        <div class="prestamo-info">
-                            <div>${p.fecha}</div>
-                            <div class="prestamo-monto">$${p.saldoPendiente.toFixed(2)} (Original: $${p.montoOriginal.toFixed(2)})</div>
-                        </div>
-                        <button class="btn-pagar-prestamo" onclick="pagarPrestamo('javier', ${i})">Pagar</button>
-                    </div>
-                `).join('')
-                : '<div class="prestamo-item">Sin préstamos</div>';
-
-            document.getElementById('prestamosToshioLista').innerHTML = estado.prestamos.toshio.length
-                ? estado.prestamos.toshio.map((p, i) => `
-                    <div class="prestamo-item">
-                        <div class="prestamo-info">
-                            <div>${p.fecha}</div>
-                            <div class="prestamo-monto">$${p.saldoPendiente.toFixed(2)} (Original: $${p.montoOriginal.toFixed(2)})</div>
-                        </div>
-                        <button class="btn-pagar-prestamo" onclick="pagarPrestamo('toshio', ${i})">Pagar</button>
-                    </div>
-                `).join('')
-                : '<div class="prestamo-item">Sin préstamos</div>';
-
-            document.getElementById('prestamosOtrosLista').innerHTML = estado.prestamos.otros.length
-                ? estado.prestamos.otros.map((p, i) => `
-                    <div class="prestamo-item">
-                        <div class="prestamo-info">
-                            <div>${p.nombre} - ${p.fecha}</div>
-                            <div class="prestamo-monto">$${p.saldoPendiente.toFixed(2)} (Original: $${p.montoOriginal.toFixed(2)})</div>
-                        </div>
-                        <button class="btn-pagar-prestamo" onclick="pagarPrestamo('otros', ${i})">Pagar</button>
-                    </div>
-                `).join('')
-                : '<div class="prestamo-item">Sin préstamos</div>';
+            document.getElementById('prestamosJavierLista').innerHTML = estado.prestamos.javier.length ? estado.prestamos.javier.map((p,i)=>`<div class="prestamo-item"><div class="prestamo-info"><div>${p.fecha}</div><div class="prestamo-monto">$${p.saldoPendiente.toFixed(2)} (Original: $${p.montoOriginal.toFixed(2)})</div></div><button class="btn-pagar-prestamo" onclick="pagarPrestamo('javier',${i})">Pagar</button></div>`).join('') : '<div>Sin préstamos</div>';
+            document.getElementById('prestamosToshioLista').innerHTML = estado.prestamos.toshio.length ? estado.prestamos.toshio.map((p,i)=>`<div class="prestamo-item"><div class="prestamo-info"><div>${p.fecha}</div><div class="prestamo-monto">$${p.saldoPendiente.toFixed(2)} (Original: $${p.montoOriginal.toFixed(2)})</div></div><button class="btn-pagar-prestamo" onclick="pagarPrestamo('toshio',${i})">Pagar</button></div>`).join('') : '<div>Sin préstamos</div>';
+            document.getElementById('prestamosOtrosLista').innerHTML = estado.prestamos.otros.length ? estado.prestamos.otros.map((p,i)=>`<div class="prestamo-item"><div class="prestamo-info"><div>${p.nombre} - ${p.fecha}</div><div class="prestamo-monto">$${p.saldoPendiente.toFixed(2)} (Original: $${p.montoOriginal.toFixed(2)})</div></div><button class="btn-pagar-prestamo" onclick="pagarPrestamo('otros',${i})">Pagar</button></div>`).join('') : '<div>Sin préstamos</div>';
 
             const maxValor = Math.max(totalDepositos, estado.gastos.total, totalAhorros) || 1;
-            const alturaMaxima = 150;
-            document.getElementById('barraDepositos').style.height = (totalDepositos / maxValor) * alturaMaxima + 'px';
-            document.getElementById('barraGastos').style.height = (estado.gastos.total / maxValor) * alturaMaxima + 'px';
-            document.getElementById('barraAhorros').style.height = (totalAhorros / maxValor) * alturaMaxima + 'px';
+            const altura = 150;
+            document.getElementById('barraDepositos').style.height = (totalDepositos / maxValor) * altura + 'px';
+            document.getElementById('barraGastos').style.height = (estado.gastos.total / maxValor) * altura + 'px';
+            document.getElementById('barraAhorros').style.height = (totalAhorros / maxValor) * altura + 'px';
             document.getElementById('totalDepositos').textContent = `$${totalDepositos.toFixed(2)}`;
             document.getElementById('totalGastosGrafica').textContent = `$${estado.gastos.total.toFixed(2)}`;
             document.getElementById('totalAhorrosGrafica').textContent = `$${totalAhorros.toFixed(2)}`;
 
-            const pendientesContainer = document.getElementById('pendientesContainer');
-            if (estado.pendientesMesesAnteriores.length > 0) {
+            const pendContainer = document.getElementById('pendientesContainer');
+            if (estado.pendientesMesesAnteriores.length) {
                 document.getElementById('pagosPendientesSection').style.display = 'block';
-                pendientesContainer.innerHTML = estado.pendientesMesesAnteriores.map(p => `
-                    <div class="pendiente-card">
-                        <div class="pendiente-info">
-                            <h4>${p.nombre}</h4>
-                            <div class="monto">$${p.monto.toFixed(2)}</div>
-                            <div>Pendiente de mes anterior</div>
-                        </div>
-                        <button class="btn-pagar-pendiente" onclick="pagarPendiente('${p.concepto}')">Pagar</button>
-                    </div>
-                `).join('');
-            } else {
-                document.getElementById('pagosPendientesSection').style.display = 'none';
-            }
+                pendContainer.innerHTML = estado.pendientesMesesAnteriores.map(p => `<div class="pendiente-card"><div class="pendiente-info"><h4>${p.nombre}</h4><div class="monto">$${p.monto.toFixed(2)}</div><div>Pendiente mes anterior</div></div><button class="btn-pagar-pendiente" onclick="pagarPendiente('${p.concepto}')">Pagar</button></div>`).join('');
+            } else document.getElementById('pagosPendientesSection').style.display = 'none';
 
-            const historialContainer = document.getElementById('historialContainer');
-            historialContainer.innerHTML = estado.historialCierres.slice().reverse().map(h => `
-                <div class="historial-card">
-                    <h4>${h.mes} ${h.año}</h4>
-                    <div class="historial-detalle">💰 Depósitos: $${h.totalDepositos.toFixed(2)}</div>
-                    <div class="historial-detalle">💸 Gastos: $${h.totalGastos.toFixed(2)}</div>
-                    <div class="historial-detalle">💰 Ahorros: $${h.totalAhorros.toFixed(2)}</div>
-                    <div class="historial-detalle">💰 Préstamos: $${h.totalPrestamos.toFixed(2)}</div>
-                    <div class="historial-detalle">🏦 Saldo final: $${h.saldoFinal.toFixed(2)}</div>
-                    <details>
-                        <summary>Ver conceptos</summary>
-                        ${h.detallesConceptos.map(d => `<div>${d.concepto}: pagado $${d.pagado.toFixed(2)} (${d.diferencia > 0 ? '+' : ''}${d.diferencia.toFixed(2)})</div>`).join('')}
-                    </details>
-                </div>
-            `).join('') || '<p>No hay cierres anteriores</p>';
+            const historialDiv = document.getElementById('historialContainer');
+            historialDiv.innerHTML = estado.historialCierres.slice().reverse().map(h => `<div class="historial-card"><h4>${h.mes} ${h.año}</h4><div>💰 Depósitos: $${h.totalDepositos.toFixed(2)}</div><div>💸 Gastos: $${h.totalGastos.toFixed(2)}</div><div>💰 Ahorros: $${h.totalAhorros.toFixed(2)}</div><div>💰 Préstamos: $${h.totalPrestamos.toFixed(2)}</div><div>🏦 Saldo final: $${h.saldoFinal.toFixed(2)}</div><details><summary>Ver conceptos</summary>${h.detallesConceptos.map(d=>`<div>${d.concepto}: pagado $${d.pagado.toFixed(2)} (${d.diferencia>0?'+':''}${d.diferencia.toFixed(2)})</div>`).join('')}</details></div>`).join('') || '<p>Sin cierres</p>';
 
-            const conceptosResumen = document.getElementById('conceptosResumen');
-            conceptosResumen.innerHTML = Object.entries(GASTOS_FIJOS).map(([key, gasto]) => {
-                const concepto = estado.conceptos[key] || { pagado: 0, diferencia: 0 };
-                const pagado = concepto.pagado || 0;
-                const clase = pagado >= gasto.montoMensual ? 'pagado-completo' : (pagado > 0 ? 'con-excedente' : 'faltante');
-                const porcentaje = totalDepositos > 0 ? (pagado / totalDepositos) * 100 : 0;
-                const alerta = porcentaje > 20 ? '<span class="alerta-20">⚠️ >20%</span>' : '';
-                return `
-                    <div class="concepto-card ${clase}">
-                        <h4>${gasto.nombre} ${alerta}</h4>
-                        <div class="concepto-detalle"><span>Debe ser:</span><span>$${gasto.montoMensual.toFixed(2)}</span></div>
-                        <div class="concepto-detalle"><span>Pagado:</span><span>$${pagado.toFixed(2)}</span></div>
-                        <div class="concepto-detalle"><span>% del total:</span><span>${porcentaje.toFixed(1)}%</span></div>
-                        <div class="concepto-detalle ${concepto.diferencia > 0 ? 'text-success' : concepto.diferencia < 0 ? 'text-danger' : ''}">
-                            <span>Diferencia:</span><span>$${concepto.diferencia.toFixed(2)}</span>
-                        </div>
-                    </div>
-                `;
+            const conceptosDiv = document.getElementById('conceptosResumen');
+            conceptosDiv.innerHTML = Object.entries(GASTOS_FIJOS).map(([key,gasto])=>{
+                const c = estado.conceptos[key] || {pagado:0,diferencia:0};
+                const pagado = c.pagado;
+                const clase = pagado >= gasto.montoMensual ? 'pagado-completo' : (pagado>0?'con-excedente':'faltante');
+                const porcentaje = totalDepositos>0 ? (pagado/totalDepositos)*100 : 0;
+                const alerta = porcentaje>20 ? '<span class="alerta-20">⚠️ >20%</span>' : '';
+                return `<div class="concepto-card ${clase}"><h4>${gasto.nombre} ${alerta}</h4><div class="concepto-detalle"><span>Debe ser:</span><span>$${gasto.montoMensual.toFixed(2)}</span></div><div class="concepto-detalle"><span>Pagado:</span><span>$${pagado.toFixed(2)}</span></div><div class="concepto-detalle"><span>% total:</span><span>${porcentaje.toFixed(1)}%</span></div><div class="concepto-detalle ${c.diferencia>0?'text-success':c.diferencia<0?'text-danger':''}"><span>Diferencia:</span><span>$${c.diferencia.toFixed(2)}</span></div></div>`;
             }).join('');
-
-            const resumenGlobal = document.getElementById('resumenGlobal');
-            resumenGlobal.innerHTML = `
+            document.getElementById('resumenGlobal').innerHTML = `
                 <div class="resumen-item"><span>💰 Total Depositado:</span><span>$${totalDepositos.toFixed(2)}</span></div>
                 <div class="resumen-item"><span>💸 Total Gastado:</span><span>$${estado.gastos.total.toFixed(2)}</span></div>
                 <div class="resumen-item"><span>💰 Total Ahorrado:</span><span>$${totalAhorros.toFixed(2)}</span></div>
-                <div class="resumen-item"><span>💰 Total Préstamos:</span><span>$${(totalPrestamosJavier + totalPrestamosToshio + totalPrestamosOtros).toFixed(2)}</span></div>
-                <div class="resumen-item"><span>📊 Diferencia:</span><span class="${totalDepositos - estado.gastos.total >= 0 ? 'text-success' : 'text-danger'}">$${(totalDepositos - estado.gastos.total).toFixed(2)}</span></div>
+                <div class="resumen-item"><span>💰 Total Préstamos:</span><span>$${(totalPrestamosJavier+totalPrestamosToshio+totalPrestamosOtros).toFixed(2)}</span></div>
+                <div class="resumen-item"><span>📊 Diferencia:</span><span class="${totalDepositos-estado.gastos.total>=0?'text-success':'text-danger'}">$${(totalDepositos-estado.gastos.total).toFixed(2)}</span></div>
                 <div class="resumen-total"><span>💰 Saldo Actual:</span><span>$${estado.saldoActual.toFixed(2)}</span></div>
             `;
 
@@ -1739,30 +1309,48 @@ ${noPagados.length ? noPagados.map(p => `   ${p.nombre}: $${p.monto.toFixed(2)}`
             tbody.innerHTML = '';
             estado.movimientos.slice().reverse().forEach(m => {
                 const row = tbody.insertRow();
-                const botonReversar = `<button class="btn-pagar-pendiente" onclick="solicitarReversion('${m.id}')">↩️</button>`;
-                row.innerHTML = `<td>${m.fecha}</td><td>${m.tipo}</td><td>${m.concepto}</td><td>${m.detalle || '-'}</td><td>$${m.monto.toFixed(2)}</td><td>$${m.javier.toFixed(2)}</td><td>$${m.toshio.toFixed(2)}</td><td>${botonReversar}</td>`;
+                row.innerHTML = `<td>${m.fecha}</td><td>${m.tipo}</td><td>${m.concepto}</td><td>${m.detalle||'-'}</td><td>$${m.monto.toFixed(2)}</td><td>$${m.javier.toFixed(2)}</td><td>$${m.toshio.toFixed(2)}</td><td><button class="btn-pagar-pendiente" onclick="solicitarReversion('${m.id}')">↩️</button></td>`;
             });
         }
 
         function solicitarReversion(id) {
-            const codigo = prompt('Ingrese el código de autorización:');
-            if (codigo !== 'jato') {
-                alert('Código incorrecto.');
-                return;
-            }
-            const motivo = prompt('Seleccione motivo (1 = duplicado, 2 = mal registrado):');
-            let motivoTexto = '';
-            if (motivo === '1') motivoTexto = 'duplicado';
-            else if (motivo === '2') motivoTexto = 'mal registrado';
-            else {
-                alert('Motivo no válido.');
-                return;
-            }
+            const codigo = prompt('Código de autorización:');
+            if (codigo !== 'jato') { alert('Código incorrecto'); return; }
+            const motivo = prompt('Motivo (1=duplicado, 2=mal registrado):');
+            let motivoTexto = motivo === '1' ? 'duplicado' : motivo === '2' ? 'mal registrado' : null;
+            if (!motivoTexto) { alert('Motivo no válido'); return; }
             reversarMovimiento(id, motivoTexto);
         }
 
-        // Inicializar
-        window.onload = function() {
+        async function reversarMovimiento(id, motivo) {
+            const idx = estado.movimientos.findIndex(m => m.id === id);
+            if (idx === -1) { alert('No encontrado'); return; }
+            const mov = estado.movimientos[idx];
+            if (!confirm(`Reversar ${mov.fecha} - ${mov.tipo} - ${mov.concepto}?`)) return;
+            estado.movimientos.splice(idx, 1);
+            recalcularEstadoDesdeMovimientos();
+            await guardarDatos();
+            actualizarUI();
+            alert('Reversado correctamente');
+        }
+
+        function seleccionarTipo(tipo, btn) {
+            document.querySelectorAll('.tipo-btn').forEach(b=>b.classList.remove('activo'));
+            btn.classList.add('activo');
+            document.getElementById('camposDeposito').classList.add('oculto');
+            document.getElementById('camposPago').classList.add('oculto');
+            document.getElementById('camposBanco').classList.add('oculto');
+            document.getElementById('camposPrestamo').classList.add('oculto');
+            if(tipo==='deposito') document.getElementById('camposDeposito').classList.remove('oculto');
+            if(tipo==='pago') document.getElementById('camposPago').classList.remove('oculto');
+            if(tipo==='banco') document.getElementById('camposBanco').classList.remove('oculto');
+            if(tipo==='prestamo') document.getElementById('camposPrestamo').classList.remove('oculto');
+        }
+        function togglePrestamoField() {
+            document.getElementById('nombrePrestamoField').style.display = document.getElementById('tipoPrestamo').value === 'otros' ? 'block' : 'none';
+        }
+
+        window.onload = () => {
             if (localStorage.getItem('loggedUser')) {
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('mainContent').style.display = 'block';
@@ -1772,10 +1360,7 @@ ${noPagados.length ? noPagados.map(p => `   ${p.nombre}: $${p.monto.toFixed(2)}`
                 document.getElementById('mainContent').style.display = 'none';
             }
             const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById('fechaDeposito').value = hoy;
-            document.getElementById('fechaPago').value = hoy;
-            document.getElementById('fechaBanco').value = hoy;
-            document.getElementById('fechaPrestamo').value = hoy;
+            ['fechaDeposito','fechaPago','fechaBanco','fechaPrestamo'].forEach(id=>document.getElementById(id).value = hoy);
         };
     </script>
 </body>
